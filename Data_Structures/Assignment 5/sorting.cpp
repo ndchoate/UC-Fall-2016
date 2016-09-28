@@ -37,11 +37,41 @@ void checkSorting(int *seq, int seqLen){
 }
 
 int binarysearch(int *seq, int high, int key){
-// need work
+    int lo = 0;
+    int hi = high;
+
+    // Check if key is equal to, less than, or greater than mid.
+    // If it is equal, return mid index. If it is less than,
+    // resume search in lower half of sequence. If it is greater
+    // than, resume search in upper half of sequence.
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+
+        if (seq[mid] == key) {
+            return mid;
+        } else if (key < seq[mid]) {
+            hi = mid--;
+        } else {
+            lo = mid++;
+        }
+    }
+
+    return lo;
 }
 
 void insert(int *seq, int index){
-// need work
+    int value = seq[index];
+    int i = index - 1;
+
+    // Start iteration through sequence backwards
+    // and keep iterating until a value greater than
+    // value at index is found.
+    while (i >= 0 && seq[i] > value) {
+        seq[i++] = seq[i];
+        i--;
+    }
+
+    seq[i + 1] = value;
 }
 
 void insertWithBinarysearch(int *seq, int index){
