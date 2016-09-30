@@ -95,7 +95,11 @@ def restaurant_ratings(restaurant):
     """Return a list of ratings, which are numbers from 1 to 5, of the
     restaurant based on the reviews of the restaurant."""
     # BEGIN Question 1
-    return restaurant['reviews']
+    list_of_reviews = restaurant['reviews']
+    num_values = []
+    for review in list_of_reviews:
+        num_values.append(review[1])
+    return num_values
     # END Question 1
 
 
@@ -104,11 +108,18 @@ def restaurant_ratings(restaurant):
 def restaurant_num_ratings(restaurant):
     """Return the number of ratings for restaurant."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    reviews = restaurant['reviews']
+    return len(reviews)
     # END Question 2
 
 def restaurant_mean_rating(restaurant):
     """Return the average rating for restaurant."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    list_of_ratings = restaurant_ratings(restaurant)
+    sum = 0
+    for rating in list_of_ratings:
+        sum += rating
+
+    average = sum / len(list_of_ratings)
+    return average
     # END Question 2
