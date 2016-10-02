@@ -19,7 +19,16 @@ def find_closest(location, centroids):
     [2.0, 3.0]
     """
     # BEGIN Question 3
-    "*** REPLACE THIS LINE ***"
+    min_distance = distance(location, centroids[0])
+    min_index = 0
+    for i in range(1, len(centroids)):
+        centroid_distance = distance(location, centroids[i])
+        if centroid_distance < min_distance:
+            min_distance = centroid_distance
+            min_index = i
+
+    return centroids[min_index]
+
     # END Question 3
 
 
@@ -40,6 +49,18 @@ def group_by_first(pairs):
             keys.append(key)
     return [[y for x, y in pairs if x == key] for key in keys]
 
+def find_closest_index(location, centroids):
+    # Extra function added to return the index of the closest centroid.
+    # To be used for group_by_centroid
+    min_distance = distance(location, centroids[0])
+    min_index = 0
+    for i in range(1, len(centroids)):
+        centroid_distance = distance(location, centroids[i])
+        if centroid_distance < min_distance:
+            min_distance = centroid_distance
+            min_index = i
+
+    return min_index
 
 def group_by_centroid(restaurants, centroids):
     """Return a list of clusters, where each cluster contains all restaurants
@@ -48,14 +69,41 @@ def group_by_centroid(restaurants, centroids):
     restaurants closest to the same centroid.
     """
     # BEGIN Question 4
-    "*** REPLACE THIS LINE ***"
+    list_of_locations = []
+    for i in range(0, len(restaurants)):
+        list_of_locations.append(restaurants[i]['location'])
+
+    # Create a list of empty lists corresponding to each cluster
+    grouped_by_centroid = [None] * len(centroids)
+    for i in range(0, len(centroids)):
+        new_lst = []
+        grouped_by_centroid[i] = new_lst
+
+    # Find which centroid is closest to each location, and put that location's
+    # correspond restaurant into the index of its closest centroid.
+    for i in range(0, len(list_of_locations)):
+        closest_centroid_index = find_closest_index(list_of_locations[i], centroids)
+        grouped_by_centroid[closest_centroid_index].append(restaurants[i])
+
+    return grouped_by_centroid
     # END Question 4
 
 
 def find_centroid(cluster):
     """Return the centroid of the locations of the restaurants in cluster."""
     # BEGIN Question 5
-    "*** REPLACE THIS LINE ***"
+    list_of_latitudes = []
+    list_of_longitudes = []
+
+    for i in range(0, len(cluster)):
+        restaurant = cluster[i]
+        location_of_restaurant = restaurant['location']
+        list_of_latitudes.append(location_of_restaurant[0])
+        list_of_longitudes.append(location_of_restaurant[1])
+
+    centroid_latitude = mean(list_of_latitudes)
+    centroid_longitude = mean(list_of_longitudes)
+    return [centroid_latitude, centroid_longitude]
     # END Question 5
 
 
@@ -66,12 +114,20 @@ def k_means(restaurants, k, max_updates=100):
     # Select initial centroids randomly by choosing k different restaurants
     centroids = [restaurant_location(r) for r in sample(restaurants, k)]
 
+    new_centroids = []
     while old_centroids != centroids and n < max_updates:
         old_centroids = centroids
         # BEGIN Question 6
-        "*** REPLACE THIS LINE ***"
+        grouped_by_centroid = group_by_centroid(restaurants, centroids)
+
+        for i in range(0, len(grouped_by_centroid)):
+            cluster_centroid = find_centroid(grouped_by_centroid[i])
+            if cluster_centroid not in new_centroids:
+                new_centroids.append(cluster_centroid)
         # END Question 6
         n += 1
+
+    centroids = new_centroids
     return centroids
 
 
