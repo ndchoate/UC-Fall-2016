@@ -168,9 +168,9 @@ def compareAlgorithms():
 		I = sortWithAlgorithm(lst, insertionSort)
 		IB = sortWithAlgorithm(lst, insertionSortWithBinarysearch)
 		M = sortWithAlgorithm(lst, mergeSort)
-		Q = sortWithAlgorithm(lst, quicksort)
+		#Q = sortWithAlgorithm(lst, quicksort)
 		B = sortWithAlgorithm(lst, bubbleSort)
-		print(S, I, IB, M, Q, B)
+		print(S, I, IB, M, B)
 
 def main():
 	compareAlgorithms()	

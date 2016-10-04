@@ -135,7 +135,7 @@ def randomize(seq):
 
 def quicksortRecursively(seq, start, stop):
 	if start >= stop:
-		return 
+		return
 	pivotIndex = partition(seq, start, stop)
 	quicksortRecursively(seq, start, pivotIndex)
 	quicksortRecursively(seq, pivotIndex+1, stop)
