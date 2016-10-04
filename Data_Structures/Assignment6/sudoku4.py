@@ -46,12 +46,13 @@ def rule1(group):
 	for cell in group:
 		count = 1
 		for cell2 in group:
-			if cell2 != cell and cell2 (is a subset of) cell:
+			# Changed (is subset of) to "cell2.issubset(cell)"
+			if cell2 != cell and cell2.issubset(cell):
 				count += 1
 		if count == len(cell):
 			for cell2 in group:
-				if not cell2 (is a subset of) cell and not cell2.isdisjoint(cell):
-					cell2 (difference_update) cell
+				if not cell2.issubset(cell) and not cell2.isdisjoint(cell):
+					cell2.difference_update(cell)
 					changed = True
 	return changed
 
