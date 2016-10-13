@@ -42,7 +42,7 @@ def getGroups(matrix):
 	return groups
 
 def rule1(group):
-	changed = False
+	changed = 0
 	for cell in group:
 		count = 1
 		for cell2 in group:
@@ -52,11 +52,15 @@ def rule1(group):
 			for cell2 in group:
 				if not cell2 <= cell and not cell2.isdisjoint(cell):
 					cell2 -= cell
-					changed = True
+					changed = 1
+		elif count > len(cell):
+			return -1
+		else:
+			pass
 	return changed
 
 def rule2(group):
-	changed = False
+	changed = 0
 	cnt = Counter()
 	for cell in group:
 		cnt += Counter(cell)
@@ -66,22 +70,29 @@ def rule2(group):
 				if item in cell and len(cell) > 1:
 					cell.clear()
 					cell.add(item)
-					changed = True
+					changed = 1
 	return changed
 
 def reduceGroup(group):
-	changed = False
-	if rule1(group):
-		changed = True
-	if rule2(group) and not changed:
-		changed = True
+	changed = 0
+	ret = rule1(group) 
+	if ret == 1:
+		changed = 1
+	elif ret == -1:
+		return -1
+	if rule2(group) == 1 and changed == 0:
+		changed = 1
 	return changed
 
-def showMatrix(matrix):
+def showMatrix(matrix, depth):
 	for i in range(9):
+		for d in range(depth):
+			print(' ', end=' ')
 		for j in range(9):
 			if len(matrix[i][j]) > 1:
 				print('x', end=' ')
+			elif len(matrix[i][j]) == 0:
+				print(' ', end=' ')
 			else:
 				item = matrix[i][j].pop()
 				matrix[i][j].add(item)
@@ -90,18 +101,24 @@ def showMatrix(matrix):
 	print()		
 
 def reduceGroups(groups):
-	changed = False
+	changed = 0
 	for group in groups:
-		if reduceGroup(group):
-			changed = True
+		ret = reduceGroup(group)
+		if ret == 1:
+			changed = 1
+		elif ret == -1:
+			return -1
 	return changed
 
 def reduce(matrix):
-	changed = True
+	changed = 1
 	groups = getGroups(matrix)
-	while changed:
+	while changed == 1:
 		changed = reduceGroups(groups)
-		showMatrix(matrix)
+	if changed == -1:
+		return -1
+	else:
+		return 0
 
 def solutionViable(matrix):
 	for i in range(9):
@@ -117,34 +134,43 @@ def solutionOK(matrix):
 				return False
 	return True
 
-def solve(matrix):
-	showMatrix(matrix)
-	reduce(matrix)
+def solve(matrix, depth):
+	ret = reduce(matrix)
+	if ret == -1:
+		return None
+	showMatrix(matrix, depth)
 	if not solutionViable(matrix):
 		return None
 	if solutionOK(matrix):
 		return matrix
 	print("Searching...")
+	found = False
 	for i in range(9):
 		for j in range(9):
 			if len(matrix[i][j]) > 1:
-				for k in matrix[i][j]:
-					mcopy = copy.deepcopy(matrix)
-					mcopy[i][j] = set([k])
-					result = solve(mcopy)
-					if result != None:
-						return result
+				found = True
+				break
+		if found:
+			break
+	if not found:
+		return None
+	for k in matrix[i][j]:
+		mcopy = copy.deepcopy(matrix)
+		mcopy[i][j] = set([k])
+		result = solve(mcopy, depth + 1)
+		if result != None:
+			return result
 	return None
 		
 def main():
 	matrix = readPuzzle()
-	showMatrix(matrix)
+	showMatrix(matrix, 0)
 	print("Begin Solving")
-	matrix = solve(matrix)
+	matrix = solve(matrix, 0)
 	if matrix == None:
 		print("No Solution Found!!!")
 		return
-	showMatrix(matrix)
+	showMatrix(matrix, 0)
 
 if __name__ == "__main__":
 	main()
