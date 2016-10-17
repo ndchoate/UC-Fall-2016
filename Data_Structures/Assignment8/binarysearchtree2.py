@@ -64,13 +64,14 @@ class BinarySearchTree:
 		return root
 
 	def getRightmost(self):
+		# !!!Changed parameter from professor's self.root to just self, might be wrong!!!
 		return BinarySearchTree.__getRightmost(self.root)
 
 	def __getRightmost(root):
 		if root.getRight() == None:
 			return root.getVal()
 		else:
-			# Original had no "root.", made this change yourself
+			# Original had no "BinarySearchTree.", made this change yourself
 			return BinarySearchTree.__getRightmost(root.getRight())
 
 	def delete(self,val):
@@ -104,9 +105,27 @@ class BinarySearchTree:
 			# has both children
 			else:
 				# !!!your code: find rightmost of left, assign it to root, delete it!!!
-				rightmost_val_left = root.getLeft().getRightmost()
-				root = rightmost_val_left
-				root.delete(rightmost_val_left)
+				left_val = root.getLeft()
+				left_val_subtree = BinarySearchTree(left_val)
+				rightmost_val_left = left_val_subtree.getRightmost()
+				root.setVal(rightmost_val_left)
+
+				# This statement was added due to flaw in Professor's suggested logic. Any
+				# value on the left is assumed to be smaller than the root, but if you set
+				# the root equal to the rightmost value on the left, then it will not delete
+				# it. This flaw is counteracted by finding a value that is less than the
+				# the root that isn't already in the tree, so that the __delete method
+				# will work properly.
+				if left_val.getLeft() == None and left_val.getRight() == None \
+						and root.getLeft().getVal() == root.getVal():
+					count = root.getLeft().getVal() - 1;
+					while count in root:
+						count -= 1
+					root.setLeft(BinarySearchTree.Node(count))
+					BinarySearchTree.__delete(root, count)
+				else:
+					BinarySearchTree.__delete(left_val_subtree.root, rightmost_val_left)
+
 				return root
 		return root		
         
