@@ -134,11 +134,11 @@ def solutionOK(matrix):
 	return True
 
 def solve(matrix):
-	stack = linkedliststackqueue2.Stack()
-	
-	stack.push(matrix)
-	while stack.isEmpty() != True:
-		m = stack.pop()
+	queue = linkedliststackqueue2.Queue()
+
+	queue.enqueue(matrix)
+	while queue.isEmpty() != True:
+		m = queue.dequeue()
 		ret = reduce(m)
 		if ret == -1:
 			continue
@@ -161,7 +161,7 @@ def solve(matrix):
 		for k in m[i][j]:
 			mcopy = copy.deepcopy(m)
 			mcopy[i][j] = set([k])
-			stack.push(mcopy)
+			queue.enqueue(mcopy)
 	return None
 		
 def main():
