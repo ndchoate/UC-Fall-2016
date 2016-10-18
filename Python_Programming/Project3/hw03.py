@@ -38,24 +38,30 @@ def interleave(s0, s1):
     >>> print_link(interleave(odds, odds))
     1 1 3 3
     """
+
+    # If s0 and s1 are same length, no need to keep making recursive calls.
+    if s0 == empty and s1 == empty:
+        return empty
+
+    # If s0 is empty and s1 is not, continue constructing linked list until
+    # end of s1 is reached.
     if s0 == empty:
-        if s1 == empty:
-            return
+        if rest(s1) == empty:
+            return link(first(s1))
         else:
-            if rest(s1) == empty:
-                return link(rest(s1)[0])
-            else:
-                return link(interleave(rest(s1), s0))
+            return link(first(s1), interleave(s0, rest(s1)))
 
+    # If s1 is empty and s0 is not, continue constructing linked list until
+    # end of s0 is reached.
     if s1 == empty:
-        if s0 == empty:
-            return
+        if rest(s0) == empty:
+            return link(first(s0))
         else:
-            if rest(s0 == empty):
-                return link(rest(s0)[0])
-            else:
-                return link(interleave(rest(s0), s1))
+            return link(first(s0), interleave(rest(s0), s1))
 
+    s0_first = first(s0)
+    s1_first = first(s1)
+    return link(s0_first, link(s1_first, interleave(rest(s0), rest(s1))))
 
 
 def height(t):
@@ -76,7 +82,13 @@ def height(t):
     >>> height(numbers)
     2
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return 0
+    if is_leaf(branches(t)):
+        return 0
+    return 1 + height(branches(t))
+
+
 
 
 def sprout_leaves(t, vals):
@@ -112,7 +124,11 @@ def sprout_leaves(t, vals):
           1
           2
     """
-    "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return tree(root(t), [tree(val) for val in vals])
+
+    new = tree(root(t), [sprout_leaves(b, vals) for b in branches(t)])
+    return new
 
 
 ###################
