@@ -22,6 +22,7 @@ def useBloomFilter():
 		spellerror = False
 		for i in range(7):
 			biton = hash(word + endings[i]) % numberOfBits
+			weird = BloomFilter[biton // 8] & (1 << (7 - biton % 8))
 			if BloomFilter[biton // 8] & (1 << (7 - biton % 8)) == 0:
 				spellerror = True
 		if not spellerror:
@@ -45,6 +46,7 @@ def checkSpelling():
 def main():
 	makeBloomFilter()
 	checkSpelling()
+	useBloomFilter()
 
 if __name__ == "__main__":
 	main()

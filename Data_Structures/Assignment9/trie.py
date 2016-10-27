@@ -22,16 +22,17 @@ class Trie:
 	# This is the recursive membership test.
 	# 1. If the length of the key is 0, then report success by returning True.
 		if len(item) == 0:
-			# Your code
+			return True
 	# 2. If the node we are looking at is None then report failure by returning False.
 		if node == None:
-			# Your code
+			return False
 	# 3. If the first unit of the key matches the unit in the current node, 
 	#  then check membership of the rest of the key starting with the follows node.
 		if item[0] == node.item:
-			# Your code
+			return Trie.__contains(node.follows, item[1:])
 	# 4. Otherwise, check membership of the key starting with the next node in the trie.
-		# Your code
+		if item[0] != node.item:
+			return Trie.__contains(node.next, item)
 
 	class TrieNode:
 		def __init__(self, item, next = None, follows = None):

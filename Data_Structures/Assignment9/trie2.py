@@ -33,6 +33,7 @@ def checkSpelling():
 def main():
 	makeTrie()
 	checkSpelling()
+	useTrie()
 
 if __name__ == "__main__":
 	main()
