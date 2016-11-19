@@ -218,30 +218,33 @@ def merge(s0, s1):
     e0, e1 = next(i0), next(i1)
 
     list_of_yielded = []
-    s0_list = []
-    s1_list = []
+
 
     while True:
-        for i in range(0, 10):
-            s0_list.append(e0)
-            e0 = next(i0)
-        for j in range(0, 10):
-            s1_list.append(e1)
-            e1 = next(i1)
+        if e0 in list_of_yielded:
+            while e0 in list_of_yielded:
+                e0 = next(i0)
 
-        combined = s0_list + s1_list
-        combined.sort()
-        dups_eliminated = []
-        for item in combined:
-            if item not in dups_eliminated:
-                dups_eliminated.append(item)
-        for item in dups_eliminated:
-            if item not in list_of_yielded:
-                yield item
-                list_of_yielded.append(item)
+        if e1 in list_of_yielded:
+            while e1 in list_of_yielded:
+                e1 = next(i1)
 
-        s0_list = []
-        s1_list = []
+        if e0 == e1:
+            yield e0
+            list_of_yielded.append(e0)
+            e0, e1 = next(i0), next(i1)
+        elif e0 < e1:
+            yield e0
+            yield e1
+            list_of_yielded.append(e0)
+            list_of_yielded.append(e1)
+            e0, e1 = next(i0), next(i1)
+        else:
+            yield e1
+            yield e0
+            list_of_yielded.append(e1)
+            list_of_yielded.append(e0)
+            e0, e1 = next(i0), next(i1)
 
 
 
