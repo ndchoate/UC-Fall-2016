@@ -217,33 +217,16 @@ def merge(s0, s1):
     i0, i1 = iter(s0), iter(s1)
     e0, e1 = next(i0), next(i1)
 
-    list_of_yielded = []
-
 
     while True:
-        if e0 in list_of_yielded:
-            while e0 in list_of_yielded:
-                e0 = next(i0)
-
-        if e1 in list_of_yielded:
-            while e1 in list_of_yielded:
-                e1 = next(i1)
-
-        if e0 == e1:
+        if e0 < e1:
             yield e0
-            list_of_yielded.append(e0)
-            e0, e1 = next(i0), next(i1)
-        elif e0 < e1:
-            yield e0
+            e0 = next(i0)
+        elif e1 < e0:
             yield e1
-            list_of_yielded.append(e0)
-            list_of_yielded.append(e1)
-            e0, e1 = next(i0), next(i1)
+            e1 = next(i1)
         else:
-            yield e1
             yield e0
-            list_of_yielded.append(e1)
-            list_of_yielded.append(e0)
             e0, e1 = next(i0), next(i1)
 
 
@@ -258,16 +241,21 @@ def make_s():
     >>> [next(s) for _ in range(20)]
     [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 27, 30, 32, 36]
     """
-    s = naturals()
-    s2 = scale(s, 2)
-    s3 = scale(s, 3)
-    s5 = scale(s, 5)
+    s2 = scale(naturals(), 2)
+    s3 = scale(naturals(), 3)
+    s5 = scale(naturals(), 5)
 
-    s_and_s2 = merge(s, s2)
-    s3_and_s5 = merge(s3, s5)
-    all_s = merge(s_and_s2, s3_and_s5)
+    all_s = merge(s2, merge(s3, s5))
+    all_nums = [1]
+    yield 1
     while True:
-        return all_s
+        next_ = next(all_s)
+        div2, div3, div5 = (next_ / 2.0), (next_ / 3.0), (next_ / 5.0)
+        if not ((div2 in all_nums) or (div3 in all_nums) or (div5 in all_nums)):
+            continue
+        else:
+            all_nums.append(next_)
+            yield next_
 
 
 def naturals():
