@@ -96,18 +96,15 @@ def has_cycle_constant(s):
     # Loop will stop when either pointer1 is Link.empty
     # (i.e. no cycle found), or when pointer1 points to the same
     # node as pointer 2.
-    while pointer1 != Link.empty:
+    while pointer1 != Link.empty or pointer2 != Link.empty:
         if pointer1 is pointer2:
             return True
 
         if pointer2 is Link.empty:
-            pointer1 = pointer1.rest
-            if pointer1 is Link.empty:
-                return False
-            else:
-                pointer2 = pointer1.rest
+            return False
         else:
-            pointer2 = pointer2.rest
+            pointer2 = pointer2.rest.rest
+            pointer1 = pointer1.rest
 
 
 ##############################
@@ -169,14 +166,19 @@ class ScaleIterator:
     [2, 4, 6, 8, 10]
     """
     def __init__(self, s, k):
-        self.s = s
+        self.s = iter(s)
         self.k = k
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        
+        try:
+            item = next(self.s) * self.k
+            return item
+        except IndexError:
+            raise StopIteration
+
 
 
 
@@ -193,7 +195,10 @@ def scale(s, k):
     >>> [next(m) for _ in range(5)]
     [2, 4, 6, 8, 10]
     """
-    "*** YOUR CODE HERE ***"
+    s_iter = iter(s)
+    while True:
+        yield next(s_iter) * k
+
 
 
 def merge(s0, s1):
@@ -211,7 +216,32 @@ def merge(s0, s1):
     """
     i0, i1 = iter(s0), iter(s1)
     e0, e1 = next(i0), next(i1)
-    "*** YOUR CODE HERE ***"
+
+    list_of_yielded = []
+    s0_list = []
+    s1_list = []
+
+    while True:
+        for i in range(0, 10):
+            s0_list.append(e0)
+            e0 = next(i0)
+        for j in range(0, 10):
+            s1_list.append(e1)
+            e1 = next(i1)
+
+        combined = s0_list + s1_list
+        combined.sort()
+        dups_eliminated = []
+        for item in combined:
+            if item not in dups_eliminated:
+                dups_eliminated.append(item)
+        for item in dups_eliminated:
+            if item not in list_of_yielded:
+                yield item
+                list_of_yielded.append(item)
+
+        s0_list = []
+        s1_list = []
 
 
 
@@ -225,7 +255,16 @@ def make_s():
     >>> [next(s) for _ in range(20)]
     [1, 2, 3, 4, 5, 6, 8, 9, 10, 12, 15, 16, 18, 20, 24, 25, 27, 30, 32, 36]
     """
-    "*** YOUR CODE HERE ***"
+    s = naturals()
+    s2 = scale(s, 2)
+    s3 = scale(s, 3)
+    s5 = scale(s, 5)
+
+    s_and_s2 = merge(s, s2)
+    s3_and_s5 = merge(s3, s5)
+    all_s = merge(s_and_s2, s3_and_s5)
+    while True:
+        return all_s
 
 
 def naturals():
@@ -242,11 +281,3 @@ def naturals():
     while True:
         yield i
         i += 1
-#
-# def main():
-#     s = Link(1, Link(2, Link(3, Link(4))))
-#     every_other(s)
-#     print(s)
-#
-# if __name__ == '__main__':
-#     main()
