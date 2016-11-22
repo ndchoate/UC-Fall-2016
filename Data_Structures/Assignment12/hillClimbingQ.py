@@ -41,7 +41,7 @@ def addNeighbors():
 def insert(seq, index):
 	value = seq[index]
 	i = index -1
-	while i >= 0 and vertexList[seq[i]].heuristic < vertexList[value].heuristic:
+	while i >= 0 and vertexList[seq[i]].heuristic > vertexList[value].heuristic:
 		seq[i + 1] = seq[i]
 		i -= 1
 	seq[i + 1] = value
