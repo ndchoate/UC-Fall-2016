@@ -44,7 +44,7 @@ class AVLNode:
 	# Your code
 	def rotateRightThenLeft(self): # precondition: right child and its left child exist
 		print('rotateRightThenLeft', self.item)
-		CBalance = self.left.right.balance
+		CBalance = self.right.left.balance
 		self.right = self.right.rotateRight()
 		newTree = self.rotateLeft()
 		if CBalance == -1:
@@ -119,12 +119,12 @@ class AVLTree:
 			### your code for Step 6.3
 
 			# !!!Issues most likely here!!!
-			parent = child
-			child = grandchild
-			theStack.pop()
+			grandchild = child
+			child = parent
+			parent = theStack.pop()
 
 
-		# if the child is the left child of the parent and 
+		# if the child is the left child of the parent and
 		if parent.left == child:
 
 		# Step 7: parent�s balance is 1, it is case 2, make parent�s balance zero and return
@@ -151,12 +151,12 @@ class AVLTree:
 
 		else:  # the mirror image
 			### Your code for Steps 7, 8, and 9
-			if parent.balance == 1:
+			if parent.balance == -1:
 				print('case 2')
 				parent.balance = 0
 				return
 			else:
-				if child.left == grandchild:
+				if child.right == grandchild:
 					print('case 3A')
 					newTree = parent.rotateLeft()
 
@@ -174,13 +174,13 @@ class AVLTree:
 			# Step 11: get grandparent out of the stack and check to see 
 			# if the left or right child needs to be replaced with newTree
 			### Your code for Step 11
-			parent = theStack.pop()
 			grandparent = theStack.pop()
-			grandparent_balance = grandparent.balance
-			if grandparent_balance == -1:
-				self.left = newTree
-			elif grandparent_balance == 1:
-				self.right = newTree
+			grandparent_item = grandparent.item
+			if newTree.item < grandparent_item:
+				grandparent.left = newTree
+			elif newTree.item > grandparent_item:
+				grandparent.right = newTree
+
 
 	def search(self, newItem):  # essentially binary search
 		theStack = linkedliststackqueue2.Stack()  # contains the path
